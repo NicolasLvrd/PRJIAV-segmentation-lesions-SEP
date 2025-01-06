@@ -56,6 +56,10 @@ def hdbet_predict_custom(
     if not keep_brain_mask:
         [os.remove(i) for i in brain_mask_files]
 
+def chunk_list(lst, chunk_size):
+    """Yield successive chunks from lst of size chunk_size."""
+    for i in range(0, len(lst), chunk_size):
+        yield lst[i:i + chunk_size]
 
 def main():
     parser = argparse.ArgumentParser()
@@ -82,7 +86,8 @@ def main():
                     if os.path.exists(flair_1):
                         files_to_process.append((flair_1, os.path.join(args.output, f'{number}_flair_1.nii.gz')))
 
-    hdbet_predict_custom(files_to_process, keep_brain_mask=False, compute_brain_extracted_image=True)
+    for chunk in chunk_list(files_to_process, 20):
+        hdbet_predict_custom(chunk, keep_brain_mask=False, compute_brain_extracted_image=True)
 
 
 if __name__ == '__main__':
