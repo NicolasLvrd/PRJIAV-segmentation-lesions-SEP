@@ -7,12 +7,15 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--input', type=str, help='Input directory', required=True)
     parser.add_argument('--output', type=str, help='Output directory', required=True)
-    parser.add_argument('--database-type', type=str, help='Type of database', choices=['MSSEG-1', 'MSSEG-2'], required=True)
+    parser.add_argument('--database-type', type=str, help='Type of database', choices=['MSSEG-1', 'MSSEG-1-test', 'MSSEG-2'], required=True)
     args = parser.parse_args()
 
     if args.database_type == 'MSSEG-1':
         flair_file_name = ['3DFLAIR.nii']
         consensus_file_name = 'Consensus.nii'
+    elif args.database_type == 'MSSEG-1-test':
+        flair_file_name = ['3DFLAIR.nii.gz']
+        consensus_file_name = 'Consensus.nii.gz'
     else:
         flair_file_name = ['flair_time01_on_middle_space.nii.gz', 'flair_time02_on_middle_space.nii.gz']
         consensus_file_name = 'ground_truth.nii.gz'

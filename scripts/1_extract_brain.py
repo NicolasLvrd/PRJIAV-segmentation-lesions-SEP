@@ -86,7 +86,7 @@ def main():
                     if os.path.exists(flair_1):
                         files_to_process.append((flair_1, os.path.join(args.output, f'{number}_flair_1.nii.gz')))
 
-    for chunk in chunk_list(files_to_process, 20):
+    for chunk in chunk_list(files_to_process, 5):
         hdbet_predict_custom(chunk, keep_brain_mask=False, compute_brain_extracted_image=True)
 
 
