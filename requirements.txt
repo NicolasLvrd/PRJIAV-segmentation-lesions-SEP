@@ -1,0 +1,6 @@
+hd-bet
+torch
+nnunetv2
+SimpleITK
+numpy
+argparse
