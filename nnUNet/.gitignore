@@ -1,0 +1,4 @@
+constants.sh
+nnUNet_preprocessed/**/
+nnUNet_raw/**/
+nnUNet_results/**/
