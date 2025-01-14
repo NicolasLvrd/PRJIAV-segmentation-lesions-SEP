@@ -21,3 +21,7 @@ Run training
 ```
 nnUNetv2_train 11 3d_fullres 0
 ```
+Run inference on specific checkpoint and specific fold
+```
+nnUNetv2_predict -i nnUNet_raw/Dataset011_MSSEG1/imagesTs/ -o nnUNet_results/Dataset011_MSSEG1/ -d 11 -c 3d_fullres -chk checkpoint_best.pth -f 0
+```
