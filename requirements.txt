@@ -4,3 +4,13 @@ nnunetv2
 SimpleITK
 numpy
 argparse
+torchvision
+opencv-python
+matplotlib
+blosc2
+acvl_utils==0.2
+h5py
+git+https://github.com/wolny/pytorch-3dunet
+tensorboard
+scikit-image
+pyyaml
