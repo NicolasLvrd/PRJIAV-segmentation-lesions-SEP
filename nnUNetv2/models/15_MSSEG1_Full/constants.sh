@@ -1,4 +1,4 @@
-source "$(dirname "$0")/../constants.sh"
+source "$(dirname "$0")/../../constants.sh"
 
 DATASET_ID=15
 DATASET_NAME=MSSEG1_Full
