@@ -81,7 +81,7 @@ def main(input_dirs: list[Path], output_dir: Path, test_percentage: float, flair
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input', type=str, nargs='+', help='Input directories', required=True)
+    parser.add_argument('--input', type=str, action='append', help='Input directories', required=True)
     parser.add_argument('--dataset-id', type=int, help='Dataset id', required=True)
     parser.add_argument('--dataset-name', type=str, help='Dataset name', required=True)
     parser.add_argument('--test-percentage', type=float, help='Percentage of test data', default=0.2)
