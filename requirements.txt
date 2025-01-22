@@ -14,3 +14,7 @@ git+https://github.com/wolny/pytorch-3dunet
 tensorboard
 scikit-image
 pyyaml
+tqdm
+spicy
+triton
+hiddenlayer
