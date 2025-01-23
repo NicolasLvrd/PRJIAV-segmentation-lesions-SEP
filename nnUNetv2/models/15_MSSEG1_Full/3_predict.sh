@@ -7,4 +7,5 @@ nnUNetv2_predict -i "${nnUNet_raw}/Dataset${DATASET_ID}_${DATASET_NAME}/imagesTs
     -d "$DATASET_ID" \
     -c "$DATASET_CONFIG" \
     -chk checkpoint_best.pth \
-    -p "$DATASET_PLAN"
+    -p "$DATASET_PLAN" \
+    -f "$DATASET_PREDICT_FOLD"
