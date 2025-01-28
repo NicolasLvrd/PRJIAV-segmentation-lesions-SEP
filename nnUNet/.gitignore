@@ -1,6 +1,0 @@
-constants.sh
-nnUNet_preprocessed/**/
-nnUNet_results/**/
-nnUNet_raw/Dataset011_MSSEG1/imagesTr/
-nnUNet_raw/Dataset011_MSSEG1/imagesTs/
-nnUNet_raw/Dataset011_MSSEG1/labelsTr/

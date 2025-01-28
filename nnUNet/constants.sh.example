@@ -1,3 +1,0 @@
-export nnUNet_raw="/home/nicolas/PRJIAV-segmentation-lesions-SEP/nnUNet_raw"
-export nnUNet_preprocessed="/home/nicolas/PRJIAV-segmentation-lesions-SEP/nnUNet_preprocessed"
-export nnUNet_results="/home/nicolas/PRJIAV-segmentation-lesions-SEP/nnUNet_results"

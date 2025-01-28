@@ -1,3 +1,0 @@
-nnunetv2
-blosc2
-acvl_utils==0.2
