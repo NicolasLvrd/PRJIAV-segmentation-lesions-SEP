@@ -1,0 +1,9 @@
+nnUNetv2/nnunet_internal/datasets/*
+!nnUNetv2/nnunet_internal/datasets/**/.gitkeep
+nnUNetv2/nnunet_internal/preprocessed/*
+!nnUNetv2/nnunet_internal/preprocessed/**/.gitkeep
+nnUNetv2/nnunet_internal/results/*
+!nnUNetv2/nnunet_internal/results/**/.gitkeep
+
+3d-unet/data/*
+3d-unet/checkpoints/*
