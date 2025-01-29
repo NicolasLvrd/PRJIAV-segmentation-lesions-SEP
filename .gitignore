@@ -8,3 +8,5 @@ nnUNetv2/nnunet_internal/results/*
 3d-unet/data/*
 3d-unet/checkpoints/*
 3d-unet/predictions/*
+
+maskRCNN/.ipynb_checkpoints/*
