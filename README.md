@@ -18,7 +18,7 @@ Les données disponibles pour la réalisation de ce projet sont les bases de don
 
   ![Exemple MSSEG1](images/MSSEG1.png)
 
-  (en rouge le consensus des lésions)
+  *(en rouge le consensus des lésions)*
 
 - MSSEG-2 : 40 patients différents de MSSEG-1, 2 IRM par patient séparé d'un certain temps, segmentation par quatre
   experts avec un consensus contenant uniquement les nouvelles lésions du second IRM.
@@ -26,7 +26,7 @@ Les données disponibles pour la réalisation de ce projet sont les bases de don
 
   ![Exemple MSSEG2](images/MSSEG2.png)
 
-  (en rouge le consensus des nouvelles lésions)
+  *(en rouge le consensus des nouvelles lésions)*
 
 L'ensemble des IRM sont fournis en format NIfTI (.nii ou .nii.gz). Il s'agit de données volumétriques 3D.
 Les données étant volumineuses, SaturnCloud a été utilisé pour leur traitement et l'entrainement des algorithmes. Les
@@ -161,7 +161,7 @@ Mask R-CNN est un modèle de détection et de segmentation d'objets qui étend F
 
 ![Architecture Mask-RCNN](images/architecture_mask_rcnn.png)
 
-Architecture Mask-RCNN
+*Architecture Mask-RCNN*
 
 L'implémentation de notre modèle Mask-RCNN est présente sous forme d'un notebook Jupyter dans le dossier `maskRCNN` de ce dépot. 
 
@@ -175,20 +175,48 @@ jupyter notebook maskRCNN/mask_rcnn.ipynb
 
 ![Architecture 3D U-Net](images/architecture_3d_unet.png)
 
-Architecture 3D U-Net
+*Architecture 3D U-Net*
 
-### nnU-net
+Pour entrainer le modèle 3D U-Net, il faut d'abord convertir les données au format h5 avec le script suivant :
+```bash
+python 3d-unet/0_prepare.py
+```
 
-[nnU-Net](https://github.com/MIC-DKFZ/nnUNet) est une version automatisée et optimisée de U-Net, conçue pour s’adapter automatiquement à n’importe quel jeu de données de segmentation d’images médicales. Contrairement aux architectures classiques nécessitant un réglage manuel, nnU-Net ajuste automatiquement sa configuration (prétraitement, architecture, post-traitement) en fonction des caractéristiques des données.L'implémentation de nnU-Net est manipulable via une interface en ligne de commande, cela ne nécessite donc pas d'écriture de code. 
+Ensuite l'entrainement peut être lancé avec la commande suivante :
+```bash
+python 3d-unet/1_train.py
+```
+
+Finalement, l'inférence peut être réalisée avec le script suivant :
+```bash
+python 3d-unet/2_inference.py
+```
+
+
+### nnU-Net
+
+[nnU-Net](https://github.com/MIC-DKFZ/nnUNet) est une version automatisée et optimisée de U-Net, conçue pour s’adapter automatiquement à n’importe quel jeu de données de segmentation d’images médicales. Contrairement aux architectures classiques nécessitant un réglage manuel, nnU-Net ajuste automatiquement sa configuration (prétraitement, architecture, post-traitement) en fonction des caractéristiques des données. L'architecture créé est proche d'un modèle 2D/3D U-Net. L'implémentation de nnU-Net est manipulable via une interface en ligne de commande, cela ne nécessite donc pas d'écriture de code. 
 
 ![nnu-net_exemples_datasets.png](images/nnu-net_exemples_datasets.png)
-Voici des exemples de datasets qui peuvent être traités par nnU-Net.
+
+*Voici des exemples de datasets qui peuvent être traités par nnU-Net.
 a. CT-scan
 b. Imagerie moléculaire par fluorescence.
 c. CT-scan
 d. IRM (T1)
 e. Microscopie électronique à balayage
-f. IRM (T1, T1 avec agent de contraste, T2, FLAIR)
+f. IRM (T1, T1 avec agent de contraste, T2, FLAIR)*
+
+Pour entrainer un modèle nnU-Net, nous avons créé un dossier par configuration dans `nnUNetv2/models`. Dans chaque dossier, les scripts suivants sont disponibles :
+  
+- `0_construct_dataset.py` : Créer un dataset nnU-Net dans avec l'arborescence et les conventions de nommage attendu par le modèle.
+- `1_preprocess_dataset.py` : Réalise l'étape interne à nnU-Net de prétraitement des données et conversion des données.
+- `2_train.py <fold>` : Entraine le modèle sur le pli spécifié (0 à 4).
+- `3_predict.py` : Réalise l'inférence sur le jeu de test.
+- `4_evaluate.py` : Calcule les métriques sur le jeu de test.
+
+Le fichier `constants.sh` permet de configurer divers paramètres de nnU-Net.
+
 
 ## Métriques
 Une bonne pratique pour évaluer une tâche de segmentation est d'utiliser à la fois des métriques basées sur les voxels, et des métriques basées sur les surfaces.
@@ -215,10 +243,67 @@ Les 5 modèles issus des 5 plis sont combinés en un seul (via une [moyenne](htt
 *Illustration stratégie de valisation et de test*
 
 ## Résultats
-### Méthode 1
-### Méthode 2
 
-La méthode 2 permet d'obtenir des résultats satisfaisants sur la segmentation des nouvelles lésions. Ci-dessous les métriques obtenus.
+### Mask-RCNN
+
+Nos résultats avec Mask-RCNN n'ont pas été satisfaisants. Le modèle n'apprend pas correctement à segmenter les lésions et prédit simplement du bruit. Mask-RCNN est une architecture plus adaptée à la détection d'objet que la segmentation d'image médicale. Nous avons donc rapidement abandonné cette approche.
+
+![resultat_mask_rcnn.png](images/resultat_mask_rcnn.png)
+
+*Prédiction du modèle Mask-RCNN*
+
+### 3D U-Net
+
+Avec 3D U-Net, nous avons obtenu des résultats plus cohérents. Le modèle apprend à reconnaitre les lesions mais la segmentation n'est pas binaire. Le résultat est une probabilité de présence de lésion pour chaque pixel. Il est donc nécessaire de définir un seuil pour binariser la segmentation. Bien réglé, le resemble correctement à la vérité terrain. Cependant, nous avons obtenu de meilleurs résultats avec nnUNet qui est également basé sur un modèle 3D U-Net. Nous n'avons donc pas approfondi cette approche.
+
+![resultat_3d_unet.png](images/resultat_3d_unet.png)
+
+*Prédiction du modèle 3D U-Net*
+
+### nnU-Net
+
+C'est avec nnU-Net que nous avons obtenu les meilleurs résultats. Nous l'avons utilisé pour poursuivre les deux méthodes de segmentation des nouvelles lésions décrites précédemment :
+
+#### Méthode 1
+
+Avec la méthode 1, nous avons entrainé un modèle pour segmenter l'ensemble des lésions dans le cerveau. Nous avons effectué l'entrainement des 5 plis recommandé par nnU-Net sur une cinquantaine d'époques. Les résultats obtenus sont les suivants sur MSSEG-1 :
+
+| Dice  |
+|-------|
+| 0.782 |
+
+![cmx_methode_1.png](images/cmx_methode_1_msseg1.png)
+
+Nous obtenons ainsi un modèle performant pour la ségmentation de l'ensemble des lésions dans le cerveau. Visuellement le résultat est également coherent :
+
+![resultat_methode_1_pred_msseg1.png](images/resultat_methode_1_pred_msseg1.png)
+
+*Prédiction sur une image du jeu de test (en rouge le consensus, en bleu la prédiction)*
+
+On cherche maintenant à segmenter les nouvelles lésions sur MSSEG-2. Pour cela, nous avons utilisé le modèle pour prédire l'ensemble des lésions sur les images du temps 0 et du temps 1 :
+
+![resultat_methode_1_pred_msseg2.png](images/resultat_methode_1_pred_msseg2.png)
+
+*Prédiction sur une image du jeu de test (en jaune les lésions prédites pour le temps 0, en bleu celles pour le temps 1)*
+
+En calculant la différence entre les deux prédictions, nous obtenons uniquement les nouvelles lésions :
+
+![resultat_methode_1_pred_msseg2_diff.png](images/resultat_methode_1_pred_msseg2_diff.png)
+
+*Différence entre les deux prédictions temps 0 et temps 1 (en rouge le consensus, en vert les nouvelles lésions prédites)*
+
+Visuellement le résultat est semblable. Cependant, les lésions ayant grossi ne sont pas complètement retirées. Il est possible d'améliorer ce résultat en utilisant la méthode d'intersection décrite précédemment. On obtient alors les résultats suivants :
+
+| Soustraction                                                                           | Intersection                                                                           |
+|----------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------|
+| Dice : 0.244                                                                           | Dice : 0.385                                                                           |
+| ![cmx_methode_1_msseg2_soustraction.png](images/cmx_methode_1_msseg2_soustraction.png) | ![cmx_methode_1_msseg2_intersection.png](images/cmx_methode_1_msseg2_intersection.png) |
+
+Bien que les résultats furent visuellement semblable, les métriques n'apprécient pas les artéfacts laissés par le calcul entre le temps 0 et le temps 1. La méthode d'intersection permet toutefois de bien améliorer le score. Ces résultats sont encourageants et il serait intéressant d'affiner la méthode de calcul pour améliorer les scores.
+
+#### Méthode 2
+
+Pour la seconde méthode, nous avons entrainé un modèle directement pour segmenter les nouvelles lésions à partir des deux images IRM en même temps. Les résultats obtenus au niveau des métriques pour la segmentation des nouvelles lésions sont bien plus élevés :
 
 | Dice | Distance de Hausdorff |
 |-----------|-----------|
