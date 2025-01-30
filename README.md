@@ -198,14 +198,49 @@ Une bonne pratique pour évaluer une tâche de segmentation est d'utiliser à la
 Nous utiliserons Dice (voxel) et la distance d'Hausdorff (surface).
 
 ### Dice
-
+![dice.png](images/dice_explication.png)
+*Illustration du calcul de la métrique Dice*
 
 ### Distance d'Hausdorff
 
 
 ## Validation et test
 
-### Résultats
+Nous utilisons une validation croisée sur 5 plis pour évaluer notre modèle.
+Les images du jeu de test ne sont pas intégrées à la valisation croisée. 
+Nous avons 11 patients de test pour la méthode 1 (sur 53 patients au total), et 4 patients de test pour la méthode 2 (sur 36 patients au total).
+Les 5 modèles issus des 5 plis sont combinés en un seul (via une [moyenne](https://github.com/MIC-DKFZ/nnUNet/blob/master/documentation/how_to_use_nnunet.md)). Ce modèle unique est évalué sur le jeu de test.
 
-### Pour aller plus loin
+![k-fold.png](images/k-fold.png)
+*Illustration stratégie de valisation et de test*
+
+## Résultats
+### Méthode 1
+### Méthode 2
+
+La méthode 2 permet d'obtenir des résultats satisfaisants sur la segmentation des nouvelles lésions. Ci-dessous les métriques obtenus.
+
+| Dice | Distance de Hausdorff |
+|-----------|-----------|
+| 0.708  | mm  |
+
+Sur la matrice de confusion, on observe que le modèle permet d'obtenir très peu de faux-negatifs. Ceci est particulièrement intéressant pour une application médicale. Il est important de detecter toutes les lésions.
+
+![nnu-net_exemples_datasets.png](images/cmx_methode_2.svg)
+*Matrice de confusion de la méthode 2*
+
+Voici une inférence réalisée sur une image du jeu de test. On observe que la segmentation prédite est cohérente. 
+
+![Image2](images/resultat_methode_2_pred.png)
+*Prédidction sur un image du jeu de test* 
+
+![Image1](images/resultat_methode_2_consensus.png)
+*Vérité terrain associée à l'image*
+
+Sur les courbes d'apprentissage ci-dessous, on constate un phénomène de surapprentissage. De plus, il y a une instabilité sur la courbe de perte de validation. Cela peut être dû à jeu de validation trop petit, pas adapté au problème. 
+
+![Image1](images/training_curves_methode_2.png)
+*Courbes d'apprentissage du modèle de la méthode 2*
+
+## Pour aller plus loin
 
