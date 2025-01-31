@@ -225,13 +225,32 @@ Une bonne pratique pour évaluer une tâche de segmentation est d'utiliser à la
 
 ### Dice
 
+On considère, sur l'image ci-dessous, que le cercle rouge est la segmentation prédite et le cercle bleu est la segmentation de référence.
+Dice correspond à deux fois l'intersection des deux segmentations, divisée par la somme des aires des segmentations.
+
+Cette métrique mesure donc à quel point deux ensembles de pixels, celui de la segmentation prédite et celui de la segmentation de référence, se chevauchent.
+
+
 ![dice.png](images/dice_explication.png)
 
 *Illustration du calcul de la métrique Dice*
 
 ### Distance d'Hausdorff
 
-TODO : expliquer la distance d'Hausdorff
+Cette métrique indique le pire cas de correspondance entre les deux ensembles : si un point d’une segmentation est très éloigné de l’autre, la distance de Hausdorff sera élevée.
+
+Pour la calculer, on procède ainsi :
+- Pour chaque point de la première segmentation (X), on cherche le point le plus proche dans la seconde segmentation.
+- On prend la plus grande de ces distances (dXY)
+- On fait la même chose en inversant les rôles des deux segmentations. On trouve (dYX).
+- La distance de Hausdorff est la plus grande de ces deux distances.
+
+![hausdorff.png](images/hausdorff.png)
+
+*Illustration du calcul de la distance d'Hausdorff*
+
+Nous avons calculé la distance d'Hausdorff uniquement sur une image dans la méthode 2. Nous n'avons pas calculé cette métrique dans la méthode 1. En effet, nous n'avons pas récupéré suffisament de segmentations prédites avant l'arrêt du service Saturn Cloud, ne nous permettant pas de calculer cette métrique. 
+
 
 ## Validation et test
 
@@ -308,7 +327,7 @@ Pour la seconde méthode, nous avons entraîné un modèle directement pour segm
 
 | Dice  | Distance de Hausdorff |
 |-------|-----------------------|
-| 0.708 | TODO DISTANCE mm      |
+| 0.708 | 1,02 mm     |
 
 Sur la matrice de confusion, on observe que le modèle permet d'obtenir très peu de faux négatifs. Ceci est particulièrement intéressant pour une application médicale. Il est important de détecter toutes les lésions.
 
@@ -334,4 +353,11 @@ TODO : Ajout image
 
 ## Pour aller plus loin
 
-TODO : conclusion
+Nous avons au final deux méthodes fonctionnelles. Cependant, voici des axes de réfléxions pour pousruivre ce travail :
+
+- Se procurer le consensus t0 de MSSEG-2 pour identifier également les lésions au temps 0 avec la méthode 2.
+- Entrainer l’ensemble des plis pour la méthode 2 (les résultats présentés ici sont basés sur un pli uniquement).
+- Entrainer sur plus d’epochs.
+- Tester d’autres trainers nnU-Net pour tester d'autres hyperparamètres.
+- Réduire la taille de batch pour reduire overfitting.
+- Tester d’autres architectures de réseaux.
