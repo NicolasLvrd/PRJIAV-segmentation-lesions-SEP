@@ -361,3 +361,6 @@ Nous avons au final deux méthodes fonctionnelles. Cependant, voici des axes de 
 - Tester d’autres trainers nnU-Net pour tester d'autres hyperparamètres.
 - Réduire la taille de batch pour reduire overfitting.
 - Tester d’autres architectures de réseaux.
+
+--- 
+Par Denis DAVIAUD et Nicolas LEVRARD
