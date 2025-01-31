@@ -348,6 +348,7 @@ Voici une inférence réalisée sur une image du jeu de test. On observe que la 
 Sur les courbes d'apprentissage ci-dessous, on constate un phénomène de surapprentissage. De plus, il y a une instabilité sur la courbe de perte de validation. Cela peut être dû à un jeu de validation trop petit, pas adapté au problème. 
 
 ![Image1](images/training_curves_methode_2.png)
+
 *Courbes d'apprentissage du modèle de la méthode 2*
 
 ## Pour aller plus loin
