@@ -329,6 +329,8 @@ Pour la seconde méthode, nous avons entraîné un modèle directement pour segm
 |-------|-----------------------|
 | 0.708 | 1,02 mm     |
 
+La distance de Hausdorff est calculée sur une seule image uniquement. 
+
 Sur la matrice de confusion, on observe que le modèle permet d'obtenir très peu de faux négatifs. Ceci est particulièrement intéressant pour une application médicale. Il est important de détecter toutes les lésions.
 
 ![nnu-net_exemples_datasets.png](images/cmx_methode_2.svg)
