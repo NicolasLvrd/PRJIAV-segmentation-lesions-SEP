@@ -221,7 +221,7 @@ Le fichier `constants.sh` permet de configurer divers paramètres de nnU-Net.
 
 Une bonne pratique pour évaluer une tâche de segmentation est d'utiliser à la fois des métriques basées sur les voxels, et des métriques basées sur les surfaces.
 - **Métriques voxel** : Elles évaluent la correspondance globale en volume entre la segmentation et la vérité terrain, indiquant si la quantité de pixels/voxels segmentés est correcte.
-**- Métriques surfaciques** : Elles vérifient la précision des contours et la forme de la segmentation, détectant les erreurs sur les bords et les irrégularités.
+- **Métriques surfaciques** : Elles vérifient la précision des contours et la forme de la segmentation, détectant les erreurs sur les bords et les irrégularités.
 
 ### Dice
 
