@@ -112,7 +112,7 @@ python scripts/0_create_file_tree.py --input $HOME/workspace/MSSEG-1 --output $H
 
 ### 1. Extraction du cerveau
 
-Chaque IRM contient l'ensemble de la tête du patient. Pour simplifier la compréhension des données par les modèles, nous avons utilisé HD-BET pour extraire le cerveau de chaque IRM. Il s'agit d'un outil en ligne de commande basé sur le modèle nnUNet. Le script suivant permet d'extraire le cerveau sur l'ensemble des IRM dans un dossier :
+Chaque IRM contient l'ensemble de la tête du patient. Pour simplifier la compréhension des données par les modèles, nous avons utilisé [HD-BET](https://github.com/MIC-DKFZ/HD-BET) pour extraire le cerveau de chaque IRM. Il s'agit d'un outil en ligne de commande basé sur le modèle nnUNet. Le script suivant permet d'extraire le cerveau sur l'ensemble des IRM dans un dossier :
 ```bash
 python scripts/1_extract_brain.py --input $HOME/workspace/MSSEG-1-preprocessed-0 --output $HOME/workspace/MSSEG-1-preprocessed-1
 ```
@@ -160,7 +160,7 @@ Mask R-CNN est un modèle de détection et de segmentation d'objets qui étend F
 
 ![Architecture Mask-RCNN](images/architecture_mask_rcnn.png)
 
-*Architecture Mask-RCNN*
+*Architecture Mask-RCNN ([Yang, Z., Dong, R., Xu, H., & Gu, J. (2020). Instance Segmentation Method Based on Improved Mask R-CNN for the Stacked Electronic Components. Electronics, 9(6), 886. https://doi.org/10.3390/electronics9060886](https://doi.org/10.3390/electronics9060886))*
 
 L'implémentation de notre modèle Mask-RCNN est présente sous forme d'un notebook Jupyter dans le dossier `maskRCNN` de ce dépot. 
 
@@ -174,7 +174,7 @@ jupyter notebook maskRCNN/mask_rcnn.ipynb
 
 ![Architecture 3D U-Net](images/architecture_3d_unet.png)
 
-*Architecture 3D U-Net*
+*Architecture 3D U-Net ([Müller, D., Soto-Rey, I., & Kramer, F. (2021). Robust chest CT image segmentation of COVID-19 lung infection based on limited data. Informatics In Medicine Unlocked, 25, 100681. https://doi.org/10.1016/j.imu.2021.100681](https://doi.org/10.1016/j.imu.2021.100681))*
 
 Pour entraîner le modèle 3D U-Net, il faut d'abord convertir les données au format h5 avec le script suivant :
 ```bash
@@ -204,7 +204,8 @@ b. Imagerie moléculaire par fluorescence.
 c. CT-scan
 d. IRM (T1)
 e. Microscopie électronique à balayage
-f. IRM (T1, T1 avec agent de contraste, T2, FLAIR)*
+f. IRM (T1, T1 avec agent de contraste, T2, FLAIR)
+([Isensee, F., Jaeger, P. F., Kohl, S. A. A., Petersen, J., & Maier-Hein, K. H. (2020). nnU-Net : a self-configuring method for deep learning-based biomedical image segmentation. Nature Methods, 18(2), 203‑211. https://doi.org/10.1038/s41592-020-01008-z](https://doi.org/10.1038/s41592-020-01008-z)*
 
 Pour entraîner un modèle nnU-Net, nous avons créé un dossier par configuration dans `nnUNetv2/models`. Dans chaque dossier, les scripts suivants sont disponibles :
   
@@ -247,7 +248,7 @@ Pour la calculer, on procède ainsi :
 
 ![hausdorff.png](images/hausdorff.png)
 
-*Illustration du calcul de la distance d'Hausdorff*
+*Illustration du calcul de la distance d'Hausdorff ([Lv, N., Zhang, Z., Li, C., Deng, J., Su, T., Chen, C., & Zhou, Y. (2022). A hybrid-attention semantic segmentation network for remote sensing interpretation in land-use surveillance. International Journal Of Machine Learning And Cybernetics, 14(2), 395‑406. https://doi.org/10.1007/s13042-022-01517-7](https://doi.org/10.1007/s13042-022-01517-7))*
 
 Nous avons calculé la distance d'Hausdorff uniquement sur une image dans la méthode 2. Nous n'avons pas calculé cette métrique dans la méthode 1. En effet, nous n'avons pas récupéré suffisament de segmentations prédites avant l'arrêt du service Saturn Cloud, ne nous permettant pas de calculer cette métrique. 
 
@@ -257,7 +258,7 @@ Nous avons calculé la distance d'Hausdorff uniquement sur une image dans la mé
 Nous utilisons une validation croisée sur 5 plis pour évaluer notre modèle.
 Nous avons 53 patients pour MSSEG-1, soit 33 patients pour l'entraînement, 9 patients pour la validation et 11 patients de test. Pour MSSEG-2, nous avons 36 patients, soit 26 pour l'entraînement, 6 pour la validation et 4 patients de test pour la méthode 2 (sur 36 patients au total). La répartition des patients d'entraînement et de validation change entre chaque pli. Les images du jeu de test ne sont jamais intégrées dans la validation croisée.
 
-Les 5 modèles issus des 5 plis sont combinés en un seul (via une [moyenne](https://github.com/MIC-DKFZ/nnUNet/blob/master/documentation/how_to_use_nnunet.md)). Ce modèle unique est évalué sur le jeu de test.
+À partir des 5 plis entraînés, nnU-Net peut soit utiliser le meilleur des 5 modèles, soit en combinant plusieurs en un seul via une [moyenne](https://github.com/MIC-DKFZ/nnUNet/blob/master/documentation/how_to_use_nnunet.md) des résultats. Dans notre cas, nous avons utilisé la moyenne des résultats des 5 plis comme sorties du modèle pour l'évaluation sur le jeu de test.
 
 ![k-fold.png](images/k-fold.png)
 *Illustration de la stratégie de validation croisée*
@@ -352,10 +353,11 @@ Sur les courbes d'apprentissage ci-dessous, on constate un phénomène de surapp
 ![Image1](images/training_curves_methode_2.png)
 
 *Courbes d'apprentissage du modèle de la méthode 2*
+(Le Pseudo Dice est une métrique Dice interne à nnU-Net calculé uniquement sur des patchs (petits morceaux d'images). Il permet de suivre l'évolution de l'entraînement sur le jeu de validation sans avoir à calculer la métrique Dice sur les images complètes.)
 
 ## Pour aller plus loin
 
-Nous avons au final deux méthodes fonctionnelles. Cependant, voici des axes de réfléxions pour pousruivre ce travail :
+Nous avons au final deux méthodes fonctionnelles. Cependant, voici des axes de réfléxions pour poursuivre ce travail :
 
 - Se procurer le consensus t0 de MSSEG-2 pour identifier également les lésions au temps 0 avec la méthode 2.
 - Entrainer l’ensemble des plis pour la méthode 2 (les résultats présentés ici sont basés sur un pli uniquement).
@@ -366,3 +368,15 @@ Nous avons au final deux méthodes fonctionnelles. Cependant, voici des axes de 
 
 --- 
 Par Denis DAVIAUD et Nicolas LEVRARD
+
+
+## Références
+
+- Çiçek, Ö., Abdulkadir, A., Lienkamp, S. S., Brox, T., & Ronneberger, O. (2016). 3D U-Net : Learning Dense Volumetric Segmentation from Sparse Annotation. arXiv (Cornell University). https://doi.org/10.48550/arxiv.1606.06650
+- Commowick, O., Cervenansky, F., & Ameli, R. (2016). MSSEG Challenge Proceedings : Multiple Sclerosis Lesions Segmentation Challenge Using a Data Management and Processing Infrastructure. https://inserm.hal.science/inserm-01397806v1
+- Commowick, O., Cervenansky, F., Cotton, F., & Dojat, M. (2021, 23 septembre). MSSEG-2 challenge proceedings : Multiple sclerosis new lesions segmentation challenge using a data management and processing infrastructure. https://inria.hal.science/hal-03358968v3
+- He, K., Gkioxari, G., Dollár, P., & Girshick, R. (2017). Mask R-CNN. arXiv (Cornell University). https://doi.org/10.48550/arxiv.1703.06870
+- Isensee, F., Jaeger, P. F., Kohl, S. A. A., Petersen, J., & Maier-Hein, K. H. (2020). nnU-Net : a self-configuring method for deep learning-based biomedical image segmentation. Nature Methods, 18(2), 203‑211. https://doi.org/10.1038/s41592-020-01008-z
+- Isensee, F., Wald, T., Ulrich, C., Baumgartner, M., Roy, S., Maier-Hein, K., & Jäger, P. F. (2024). nnU-Net Revisited : A Call for Rigorous Validation in 3D Medical Image Segmentation. Dans Lecture notes in computer science (p. 488‑498). https://doi.org/10.1007/978-3-031-72114-4_47
+- Mic-Dkfz. (s. d.). GitHub - MIC-DKFZ/HD-BET : MRI brain extraction tool. GitHub. https://github.com/MIC-DKFZ/HD-BET
+- Wolny. (s. d.). GitHub - wolny/pytorch-3dunet : 3D U-Net model for volumetric semantic segmentation written in pytorch. GitHub. https://github.com/wolny/pytorch-3dunet
